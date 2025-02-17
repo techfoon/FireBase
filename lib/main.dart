@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase1/firebase_options.dart';
+import 'package:firebase1/model/user_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,14 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  late Future<QuerySnapshot<Map<String, dynamic>>> mUsers ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   mUsers = FirebaseFirestore.instance.collection("User").get();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,19 +37,24 @@ class _DashBoardState extends State<DashBoard> {
           children: [
             Container(
               height: 600,
-              child: StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("User").snapshots(),
+              child: FutureBuilder <QuerySnapshot<Map<String, dynamic>>>(
+                  future: mUsers,
                   builder: (context, snap) {
                     if (snap.hasData) {
                       return snap.data!.docs.isNotEmpty
                           ? ListView.builder(
                               itemCount: snap.data!.docs.length,
+
                               itemBuilder: (context, index) {
+                                var currUser = UserModel.FromJson(
+                                   snap.data!.docs[index].data());                              ///  here is coding mistake
                                 return ListTile(
-                                  leading: Text(
-                                      "${snap.data!.docs[index].data()['class']}"),
+
+                                  leading:  Text("${index+1}"),
                                   title: Text(
-                                      "${snap.data!.docs[index].data()['name']}"),
+                                      "${ currUser.name}"),
+                               subtitle: Text(
+                                      "${currUser.Class}"),
                                 );
                               })
                           : Container(
