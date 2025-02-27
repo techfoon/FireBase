@@ -1,19 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-class UserModel {
-  String? Class;
+class LoginModel {
+  String email;
 
-  String uid;
+  LoginModel({required this.email});
 
-  String? name;
+  factory LoginModel.FromJson(Map<String, dynamic> JSON) {
+    return LoginModel(email: JSON['email']);
+  }
 
-  UserModel({ required this.uid,  required this.name, required this.Class});
-
-  factory UserModel.FromJson(Map<String, dynamic> JSON) {
-    return UserModel(
-      
-      uid: "",
-      
-      Class: JSON['class'], name: JSON['name']);
+  Map<String, dynamic> FromDoc() {
+    return {'email': email};
   }
 }

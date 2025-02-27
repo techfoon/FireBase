@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase1/firebase_options.dart';
 import 'package:firebase1/model/user_model.dart';
 import 'package:firebase1/ui/dashborad.dart';
+import 'package:firebase1/ui/login.dart';
 import 'package:firebase1/ui/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -277,19 +278,33 @@ class Signup extends StatelessWidget {
       log("Please Fill all the Required Filed");
     } else {
       if (PassController == cPassController) {
-        UserCredential? userCredential;
+        UserCredential userCredential;
 
         try {
-          userCredential = await FirebaseAuth.instance
+         
+
+
+          FirebaseAuth.instance
               .createUserWithEmailAndPassword(
                   email: EmailController, password: PassController)
               .then(
             (value) {
               log("user created");
+
+// this use to Store data in FireStore DataBase
+              FirebaseFirestore.instance
+                  .collection("usersX")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .set(LoginModel(email: EmailController).FromDoc());
+//-----------------------------------------------------------------------
+              Navigator.pushReplacement(Context,
+                  MaterialPageRoute(builder: (context) {
+                return Login();
+              }));
             },
           );
-        } catch(ex) {
-          log( ex.toString());
+        } catch (ex) {
+          log(ex.toString());
         }
       } else {
         log("password and ConfirmPassword are mismatched");

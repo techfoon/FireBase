@@ -1,10 +1,10 @@
-import 'dart:math';
+import 'dart:developer';
 import 'dart:convert';
-
 
 import 'package:firebase1/main.dart';
 import 'package:firebase1/ui/dashborad.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class Login extends StatefulWidget {
 logintodash({required BuildContext context}) {
   return Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) =>DashboradM()),
+    MaterialPageRoute(builder: (context) => DashboradM()),
   );
 }
 
@@ -248,6 +248,17 @@ class _LoginState extends State<Login> {
       {required String EmailController,
       required String PassController,
       required BuildContext Context}) async {
-    int? verifiers;
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: EmailController, password: PassController)
+          .then((value) {
+        return log("Logins Success");
+      });
+
+     
+    } catch (e) {
+      print("Error: $e");
+    }
   }
 }
